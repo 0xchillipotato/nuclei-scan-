@@ -8,10 +8,11 @@ on:
 jobs:
   NucleiScan:
     runs-on: ubuntu-latest
-   :
+
+    steps:
       - name: Fetch target URLs
         run: |
-          curl -o targets https://web.archive.org/cdx/search/cdx?url=*.newegg.com&fl=original&collapse=urlkey
+          curl -o targets.txt 'https://web.archive.org/cdx/search/cdx?url=*.newegg.com&fl=original&collapse=urlkey'
 
       - name: Install Go
         uses: actions/setup-go@v2
@@ -21,13 +22,13 @@ jobs:
       - name: Set up Git
         run: |
           git config --global user.name "Your Name"
-          git config --global user "youremail@example.com"
+          git config --global user.email "youremail@example.com"
 
-      - name: Required Tools
+      - name: Install Required Tools
         run: |
           export GOPRIVATE=github.com/projectdis/nuclei
           export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          go install -v github.com/projectdisuclei/v2/cmduclei@latest
+          go install - github.com/projectdis/nuclei/v2/cmd/nuclei@latest
         shell: bash
 
       - name: Vulnerability Scanning
