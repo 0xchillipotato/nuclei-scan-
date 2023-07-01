@@ -1,32 +1,38 @@
-name: Nuclei-VulnScanner
-
+name: Nuclei
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  targeturl: 'https://web.archive.org/cdx/search/cdx?url=*.newegg.com&fl=original&collapse=urlkey'
 
 jobs:
-  NucleiScan:
+  recon:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Fetch target
-        run: |
-          curl -o targets.txt 'https://web.archive.org/cdx/search/cdx?url=*.newegg.com&fl=original&collapse=urlkey'
-
-      - name: Install Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.19
-
-      - name: Install Required Tools
-        run: go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
-
-      - name: Vulnerability Scanning
-        run: nuclei -l targets.txt -/ -o nuclei_output.txt
-
-      - name: Upload Nuclei Output as Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: Nuclei Output
-          path: nuclei_output.txt
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Install Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.19 
+    
+    - name: Nuclei
+      run: |
+        go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
+      shell: bash
+    
+    - name: scanning  
+      run: |
+        curl $DOMAIN -o targets.txt
+        nuclei -l targets.txt | tee -a nuclei-scan-result.txt
+      shell: bash
+      
+    - name: Save results
+      uses: actions/upload-artifact@v2
+      with:
+        name: Saving Result
+        path: nuclei-scan-result.txt
+      
