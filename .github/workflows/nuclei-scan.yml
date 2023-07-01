@@ -2,7 +2,8 @@ name: Nuclei-VulnScanner
 
 on:
   push:
-    branches      - main
+    branches:
+      - main
 
 jobs:
   NucleiScan:
@@ -10,7 +11,7 @@ jobs:
     steps:
       - name: Fetch target URLs
         run: |
-          curl -o targets.txt 'https://web.archive.org/cdx/search/cdx?url=*.newegg.com&fl=original&collapse=urlkey'
+          curl -o targets.txt https://forsec.me/targets.txt
 
       - name: Install Go
         uses: actions/setup-go@v2
