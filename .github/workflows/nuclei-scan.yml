@@ -1,4 +1,4 @@
-name: Nuclei-VulnScanner
+name:uclei-VulnScanner
 
 on:
   push:
@@ -10,28 +10,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Fetch target URLs
+      - name: Fetch target
         run: |
           curl -o targets.txt 'https://web.archive.org/cdx/search/cdx?url=*.newegg.com&fl=original&collapse=urlkey'
 
       - name: Install Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.19
-
-      - name: Set up Git
-        run: |
-          git config --global user.name "Your Name"
-          git config --global user.email "youremail@example.com"
+          go-version 1.19
 
       - name: Install Required Tools
-        run: |
-          export GOPRIVATE=github.com/projectdis/nuclei
-          export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          go install - github.com/projectdis/nuclei/v2/cmd/nuclei@latest
-        shell: bash
+        run: install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
 
       - name: Vulnerability Scanning
-        run: |
-          nuclei -l targets.txt -t templates/ -o nuclei_output.txt
-        shell: bash
+        run: nuclei -l targets.txt -t templates/ -o nuclei_output.txt
+
+      - name: Upload Nuclei Output as Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Nuclei Output
+          path: nuclei_output.txt
