@@ -1,38 +1,28 @@
-name: Nuclei
+name: Nuclei-VulnScanner
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    branches      - main
 
 jobs:
-  scan:
+  NucleiScan:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Fetch target list
+      - name: Fetch target URLs
         run: |
-          curl -o targets.txt https://web.archive.org/cdx/search/cdx?url=*.newegg.com&fl=original&collapse=urlkey
+          curl -o targets.txt 'https://web.archive.org/cdx/search/cdx?url=*.newegg.com&fl=original&collapse=urlkey'
 
-      - name: Install Nuclei
-        run: |
-          wget https://github.com/projectdiscovery/nuclei/releases/download/v2.4.0/nuclei2.4.0_linux_amd64.tar.gz
-          tar -xzvf nuclei_2.4.0_linux_amd64.tar.gz
-          sudo mv nuclei /usr/local/bin/
-
-      - name: Run Nuclei
-        run: |
-          nuclei -update-templates
-          nuclei -l targets.txt -t templates/ -o output.txt
-
-      - name: Upload Nuclei output as artifact
-        uses: actions/upload-artifact@v2
+      - name: Install Go
+        uses: actions/setup-go@v2
         with:
-          name: Nuclei Output
-          path: output.txt
+          go-version: 1.19
+
+      - name: Install Required Tools
+        run: |
+          go install -v github.com/projectdis/nuclei/v2/cmd/nuclei@latest
+        shell: bash
+
+      - name: Vulnerability Scanning
+        run: |
+          nuclei -l targets.txt -t templates/ -o nuclei_output.txt
+        shell: bash
