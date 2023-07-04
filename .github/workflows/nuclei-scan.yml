@@ -22,7 +22,7 @@ jobs:
     - name: scanning  
       run: |
         curl $targeturl -o targets.txt
-        nuclei -l targets.txt | tee -a nuclei-scan-result.txt
+        nuclei -l targets.txt -es info | tee -a nuclei-scan-result.txt
       shell: bash
       
     - name: Save results
