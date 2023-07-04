@@ -21,7 +21,7 @@ jobs:
         sudo mv nuclei /usr/local/bin/
     - name: scanning  
       run: |
-        curl $DOMAIN -o targets.txt
+        curl $targeturl -o targets.txt
         nuclei -l targets.txt | tee -a nuclei-scan-result.txt
       shell: bash
       
