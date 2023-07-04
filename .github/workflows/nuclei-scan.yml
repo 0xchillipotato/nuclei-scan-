@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 env:
-  targeturl: 'https://web.archive.org/cdx/search/cdx?url=*.fujcharity.ae&fl=original&collapse=urlkey'
+  targeturl: 'https://web.archive.org/cdx/search/cdx?url=*.newegg.com&fl=original&collapse=urlkey'
 
 jobs:
   recon:
@@ -16,8 +16,8 @@ jobs:
       uses: actions/checkout@v2
     - name: Install Nuclei
       run: |
-        wget https://github.com/projectdiscovery/nuclei/releases/download/v2.4.0/nuclei_2.4.0_linux_amd64.tar.gz
-        tar -xzvf nuclei_2.4.0_linux_amd64.tar.gz
+        wget https://github.com/projectdiscovery/nuclei/releases/download/v2.9.8/nuclei_2.9.8_linux_amd64.zip
+        unzip nuclei_2.9.8_linux_amd64.zip
         sudo mv nuclei /usr/local/bin/
     - name: scanning  
       run: |
