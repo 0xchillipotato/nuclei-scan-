@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 env:
-  targeturl: 'https://web.archive.org/cdx/search/cdx?url=*.newegg.com&fl=original&collapse=urlkey'
+  targeturl: 'https://web.archive.org/cdx/search/cdx?url=*.fujcharity.ae&fl=original&collapse=urlkey'
 
 jobs:
   recon:
@@ -14,16 +14,11 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Install Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.17 
-    
-    - name: Nuclei
+    - name: Install Nuclei
       run: |
-        go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
-      shell: bash
-    
+        wget https://github.com/projectdiscovery/nuclei/releases/download/v2.4.0/nuclei_2.4.0_linux_amd64.tar.gz
+        tar -xzvf nuclei_2.4.0_linux_amd64.tar.gz
+        sudo mv nuclei /usr/local/bin/
     - name: scanning  
       run: |
         curl $DOMAIN -o targets.txt
@@ -35,4 +30,3 @@ jobs:
       with:
         name: Saving Result
         path: nuclei-scan-result.txt
-      
